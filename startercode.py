@@ -1,7 +1,7 @@
 # SI 201 HW6 (APIs, JSON, and Caching)
-# Your name:
-# Your student id:
-# Your email:
+# Your name: Shivani Patel
+# Your student id: #0399 0808
+# Your email: shivapa@umich.edu
 # Who or what you worked with on this homework (including generative AI like ChatGPT):
 # If you worked with generative AI also add a statement for how you used it.
 # e.g.:
@@ -36,7 +36,12 @@ def load_json(filename):
         A dictionary with the JSON data, OR an empty dictionary {} if the file
         cannot be opened or is not valid JSON.
     """
-    pass
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    
 
 
 def create_cache(dictionary, filename):
@@ -51,7 +56,9 @@ def create_cache(dictionary, filename):
     RETURNS:
         None
     """
-    pass
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(dictionary, f, indent=4)
+    
 
 
 def search_breed(breed_id):
@@ -68,7 +75,21 @@ def search_breed(breed_id):
         JSON body as a dict (with a top-level 'data' key on success), OR None if the
         request failed or the response does not represent a successful breed lookup.
     """
-    pass
+    url = f"https://dogapi.dog/api/v2/breeds/{breed_id}"
+    try:
+        response = requests.get(url)
+    except:
+        return None
+    if response.status_code != 200:
+        return None
+    try:
+        data = response.json()
+    except:
+        return None
+    if not data or "data" not in data or data["data"] is None:
+        return None
+    
+    return (data, url)
 
 
 def update_cache(breed_ids, cache_file):
@@ -85,7 +106,16 @@ def update_cache(breed_ids, cache_file):
         A string: "Cached data for {percentage}% of breeds",
         where percentage = (successful_new_adds / len(breed_ids)) * 100.
     """
-    pass
+    cache = load_json(cache_file)
+    if not isinstance(cache, dict):
+        cache = {}
+    new_success = 0
+
+    for breed_id in breed_ids:
+        url = f"https://dogapi.dog/api/v2/breeds/{breed_id}"
+
+        if url in cache:
+            continue
 
 
 def get_longest_lifespan_breed(cache_file):
