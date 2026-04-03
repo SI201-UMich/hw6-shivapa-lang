@@ -116,6 +116,20 @@ def update_cache(breed_ids, cache_file):
 
         if url in cache:
             continue
+        result = search_breed(breed_id)
+
+        if result is not None:
+            data = result[0]
+            req_url = result[1]
+            cache[req_url] = data 
+            new_success += 1
+    create_cache(cache, cache_file)
+
+    if len(breed_ids) == 0:
+        percentage = 0.0
+    else:
+        percentage = (new_success / len(breed_id))*100
+    return "Cached data for " + str(percentage) + "% of breeds"
 
 
 def get_longest_lifespan_breed(cache_file):
@@ -130,7 +144,30 @@ def get_longest_lifespan_breed(cache_file):
         A tuple (breed_name, max_lifespan_integer) for the winning breed, OR the
         string "No breeds found" if no breed in the cache has a life.max value.
     """
-    pass
+    cache = load_json(cache_file)
+    best_name = None
+    best_life = None
+
+    for entry in cache.values():
+        try:
+            attrs = entry["data"]["attributes"]
+            name = attrs["name"]
+            life = attrs.get("life", {})
+            max_life = life.get("max")
+
+            if not isinstance(max_life, int):
+                continue
+            if best_life is None or max_life > best_life:
+                best_life = max_life
+                best_name = name
+            elif max_life == best_life:
+                if name < best_name:
+                    best_name = name
+        except:
+            continue
+    if best_name is None:
+        return "No breeds found"
+    return (best_name, best_life)
 
 
 def get_groups_above_cutoff(cutoff, cache_file):
@@ -149,7 +186,23 @@ def get_groups_above_cutoff(cutoff, cache_file):
     RETURNS:
         A dictionary {group_uuid: count} for groups with count >= cutoff only.
     """
-    pass
+    cache = load_json(cache_file)
+    group_counts = {}
+
+    for entry in cache.values():
+        try:
+            group_id = entry["data"]["relationships"]["group"]["data"]["id"]
+            if not group_id:
+                continue
+            group_counts[group_id] = group_counts.get(group_id, 0) + 1
+        except:
+            continue
+    result = {}
+    for key in group_counts:
+        count = group_counts[key]
+        if count >= cutoff:
+            result[key] = count
+    return result
 
 
 # Extra Credit
