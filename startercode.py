@@ -2,13 +2,17 @@
 # Your name: Shivani Patel
 # Your student id: #0399 0808
 # Your email: shivapa@umich.edu
-# Who or what you worked with on this homework (including generative AI like ChatGPT):
+# Who or what you worked with on this homework (including generative AI like ChatGPT): Google Gemini AI
 # If you worked with generative AI also add a statement for how you used it.
-# e.g.:
+# e.g.: I actually struggled a lot with this assignment so I did have to rely a little more on AI than I normally do. I had originally started
+# this homework on a different depo but I think I messed something up in the dogapi_sample_cache.py because nothing I did made my code work. When I
+# reduplicated this assignment and started in a new depo, the code finally started working properly. I needed help with the try and except format and using dump function.
 # Asked ChatGPT for help debugging and understanding the JSON structure
 #
 # Did your use of GenAI on this assignment align with your goals and guidelines in your Gen AI contract? If not, why?
-#
+# While I did rely more heavily on AI on this homework, I never abused it and made sure to understand the pieces of code I was using from it. I ensured to prioritize my notes from class
+# and my peers when I needed help. Unfortunaley I was unaware in the beginning my errors in my code were not from my code itself but rather cloning the file wrong and accidentaly typing something
+# in the dogapi_sample_cache.py. I was able to get the code running the minute I got a fresh depo and deleted my original one. 
 # --- ARGUMENTS & EXPECTED RETURN VALUES PROVIDED --- #
 # --- SEE INSTRUCTIONS FOR FULL DETAILS ON METHOD IMPLEMENTATION --- #
 
@@ -128,7 +132,7 @@ def update_cache(breed_ids, cache_file):
     if len(breed_ids) == 0:
         percentage = 0.0
     else:
-        percentage = (new_success / len(breed_id))*100
+        percentage = (new_success / len(breed_ids))*100
     return "Cached data for " + str(percentage) + "% of breeds"
 
 
@@ -282,9 +286,9 @@ class TestHomeworkDogAPI(unittest.TestCase):
         # NOTE: By default we leave test files on disk so you can inspect the cache.
         # If you want the tests to clean up after themselves, UNCOMMENT the lines below.
         #
-        # if os.path.exists(self.test_cache_file):
-        #     os.remove(self.test_cache_file)
-        pass
+        if os.path.exists(self.test_cache_file):
+            os.remove(self.test_cache_file)
+        
 
     # -------------------------
     # load_json / create_cache
@@ -484,7 +488,7 @@ class TestHomeworkDogAPI(unittest.TestCase):
     # -------------------------
     # extra credit - uncomment tests below to evaluate extra credit function
     # -------------------------
-    """
+    
     def test_recommend_breeds_in_same_group_empty_cache(self):
         create_cache({}, self.test_cache_file)
         self.assertEqual(
@@ -589,7 +593,7 @@ class TestHomeworkDogAPI(unittest.TestCase):
             recommend_breeds_in_same_group("breed a", self.test_cache_file),
             ["Breed B", "Breed Z"],
         )
-    """
+
 
 
 if __name__ == "__main__":
